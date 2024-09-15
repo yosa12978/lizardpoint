@@ -1,0 +1,68 @@
+services:
+  web:
+    container_name: lizardpoint-web
+    build:
+      context: .
+      dockerfile: air.dockerfile
+    ports:
+      - "3000:80"
+    volumes:
+      - ./:/app
+    networks:
+      - lp-net
+    healthcheck:
+      test: curl -f http://localhost
+      interval: 1m
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+  postgres:
+    container_name: lizardpoint-postgres
+    image: postgres
+    ports:
+      - "3001:5432"
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=user
+      - POSTGRES_DB=lizardPoint_db
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - lp-net
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+  migrate:
+    container_name: lizardpoint-migrate
+    image: migrate/migrate
+    networks:
+      - lp-net
+    volumes:
+      - ./migrations:/migrations
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: [ "-path", "/migrations", "-database", "postgres://user:user@lizardPoint-postgres:5432/lizardPoint_db?sslmode=disable", "up" ]
+    links:
+      - postgres
+  adminer:
+    container_name: lizardpoint-adminer
+    image: adminer
+    ports:
+      - "3003:8080"
+    networks:
+      - lp-net
+
+networks:
+  lp-net:
+    driver: bridge
+
+volumes:
+  pg_data:
