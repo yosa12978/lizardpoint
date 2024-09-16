@@ -3,8 +3,8 @@ tmp_dir = "bin"
 
 [build]
 cmd = "make"
-bin = "bin/lizardPoint"
-full_bin = "APP_ENV=dev APP_USER=air ./bin/lizardPoint"
+bin = "bin/lizardpoint"
+full_bin = "APP_ENV=dev APP_USER=air ./bin/lizardpoint"
 include_ext = ["go", "tpl", "tmpl", "html"]
 exclude_dir = ["assets", "tmp", "vendor", "bin", "docs"]
 include_dir = []
