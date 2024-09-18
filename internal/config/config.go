@@ -18,6 +18,14 @@ type Config struct {
 		Addr         string `yaml:"addr" envconfig:"LP_ADDR"`
 		RootPassword string `yaml:"root_pass" envconfig:"LP_ROOT_PASS"`
 	} `yaml:"server"`
+	Postgres struct {
+		User           string `yaml:"user" envconfig:"LP_POSTGRES_USER"`
+		Password       string `yaml:"password" envconfig:"LP_POSTGRES_PASSWORD"`
+		Database       string `yaml:"database" envconfig:"LP_POSTGRES_DATABASE"`
+		SSLMode        string `yaml:"sslmode" envconfig:"LP_POSTGRES_SSLMODE"`
+		URL            string `yaml:"url" envconfig:"LP_POSTGRES_URL"`
+		MigrationsPath string `yaml:"migrations_path" envconfig:"LP_POSTGRES_MIGRATIONS_PATH"`
+	} `yaml:"postgres"`
 }
 
 func Get() Config {
