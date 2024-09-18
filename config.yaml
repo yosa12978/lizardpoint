@@ -1,3 +1,10 @@
 server:
   addr: "0.0.0.0:80"
   root_pass: "root_pass"
+postgres:
+  url: "localhost:5432"
+  database: "lizardpoint_db"
+  user: "user"
+  password: "user"
+  sslmode: "disable"
+  migrations_path: "file://migrations"
