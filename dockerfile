@@ -13,6 +13,7 @@ COPY --from=builder /app/bin .
 COPY --from=builder /app/templates ./templates
 COPY --from=builder /app/assets ./assets
 COPY --from=builder /app/config.yaml .
+COPY --from=builder /app/migrations ./migrations
 
 RUN apk --update --no-cache add curl
 
