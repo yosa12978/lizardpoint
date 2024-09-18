@@ -9,6 +9,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/yosa12978/lizardpoint/data"
 	"github.com/yosa12978/lizardpoint/internal/config"
 	"github.com/yosa12978/lizardpoint/internal/logging"
 )
@@ -23,6 +24,8 @@ func Run() error {
 
 	conf := config.Get()
 	logger := logging.NewJsonLogger(os.Stdout)
+
+	data.Postgres(ctx, logger)
 
 	server := newServer(ctx, conf.Server.Addr, logger)
 
