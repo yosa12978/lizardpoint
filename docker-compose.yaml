@@ -4,10 +4,18 @@ services:
     build:
       context: .
       dockerfile: air.dockerfile
+    restart: always
     ports:
       - "3000:80"
     volumes:
       - ./:/app
+    environment:
+      - LP_POSTGRES_USER=user
+      - LP_POSTGRES_PASSWORD=user
+      - LP_POSTGRES_DB=lizardpoint_db
+      - LP_POSTGRES_URL=lizardpoint-postgres:5432
+      - LP_POSTGRES_SSLMODE=disable
+      - LP_POSTGRES_MIGRATIONS_PATH=file://migrations
     networks:
       - lp-net
     healthcheck:
@@ -19,17 +27,16 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      migrate:
-        condition: service_completed_successfully
   postgres:
     container_name: lizardpoint-postgres
     image: postgres
+    restart: always
     ports:
       - "3001:5432"
     environment:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=user
-      - POSTGRES_DB=lizardPoint_db
+      - POSTGRES_DB=lizardpoint_db
     volumes:
       - pg_data:/var/lib/postgresql/data
     networks:
@@ -39,22 +46,10 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
-  migrate:
-    container_name: lizardpoint-migrate
-    image: migrate/migrate
-    networks:
-      - lp-net
-    volumes:
-      - ./migrations:/migrations
-    depends_on:
-      postgres:
-        condition: service_healthy
-    command: [ "-path", "/migrations", "-database", "postgres://user:user@lizardPoint-postgres:5432/lizardPoint_db?sslmode=disable", "up" ]
-    links:
-      - postgres
   adminer:
     container_name: lizardpoint-adminer
     image: adminer
+    restart: always
     ports:
       - "3003:8080"
     networks:
