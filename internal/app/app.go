@@ -9,8 +9,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/yosa12978/lizardpoint/data"
 	"github.com/yosa12978/lizardpoint/internal/config"
+	"github.com/yosa12978/lizardpoint/internal/data"
 	"github.com/yosa12978/lizardpoint/internal/logging"
 )
 
