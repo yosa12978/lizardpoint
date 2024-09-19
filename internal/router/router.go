@@ -28,8 +28,4 @@ func addRoutes(router *http.ServeMux, opts options) {
 		w.WriteHeader(200)
 		utils.RenderTemplate(w, "index", nil)
 	})
-
-	router.HandleFunc("GET /panic", func(w http.ResponseWriter, r *http.Request) {
-		panic("unimplemented")
-	})
 }
