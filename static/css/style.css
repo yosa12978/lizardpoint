@@ -1,14 +1,15 @@
 * {
-    font-family: -apple-system, BlinkMacSystemFont, 
-        avenir next, avenir, segoe ui, 
-        helvetica neue, helvetica, Cantarell, 
+    font-family: -apple-system, BlinkMacSystemFont,
+        avenir next, avenir, segoe ui,
+        helvetica neue, helvetica, Cantarell,
         Ubuntu, roboto, noto, arial, sans-serif;
 }
 
 html {
+    line-height: 1.4;
     color-scheme: dark;
     max-width: 650px;
-    margin: auto;    
+    margin: auto;
 }
 
 header {
