@@ -1,0 +1,13 @@
+BEGIN;
+
+DROP TABLE IF EXISTS read_permissions;
+DROP TABLE IF EXISTS write_permissions;
+DROP TABLE IF EXISTS messages;
+DROP TABLE IF EXISTS channels;
+DROP TABLE IF EXISTS accounts_roles;
+DROP TABLE IF EXISTS accounts;
+DROP TABLE IF EXISTS roles;
+
+COMMIT;
+
+
