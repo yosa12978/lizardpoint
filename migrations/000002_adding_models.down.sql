@@ -8,6 +8,9 @@ DROP TABLE IF EXISTS accounts_roles;
 DROP TABLE IF EXISTS accounts;
 DROP TABLE IF EXISTS roles;
 
+DROP INDEX IF EXISTS idx_accounts_username;
+DROP INDEX IF EXISTS idx_channels_name;
+DROP INDEX IF EXISTS idx_messages_account_id;
+DROP INDEX IF EXISTS idx_messages_channel_id;
+
 COMMIT;
-
-

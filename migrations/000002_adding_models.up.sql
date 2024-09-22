@@ -15,6 +15,8 @@ CREATE TABLE accounts (
     PRIMARY KEY (id)
 );
 
+CREATE INDEX IF NOT EXISTS idx_accounts_username ON accounts(username);
+
 CREATE TABLE accounts_roles (
     account_id uuid NOT NULL,
     role_name VARCHAR NOT NULL,
@@ -29,6 +31,8 @@ CREATE TABLE channels (
     PRIMARY KEY (id)
 );
 
+CREATE INDEX IF NOT EXISTS idx_channels_name ON channels(name);
+
 CREATE TABLE messages (
     id uuid DEFAULT gen_random_uuid(),
     content VARCHAR NOT NULL,
@@ -40,6 +44,9 @@ CREATE TABLE messages (
     FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE NO ACTION, 
     PRIMARY KEY (id)
 );
+
+CREATE INDEX IF NOT EXISTS idx_messages_channel_id ON messages(channel_id);
+CREATE INDEX IF NOT EXISTS idx_messages_account_id ON messages(account_id);
 
 CREATE TABLE write_permissions (
     channel_id uuid NOT NULL,
