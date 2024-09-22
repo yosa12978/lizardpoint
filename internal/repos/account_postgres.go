@@ -21,25 +21,58 @@ func NewAccountPostgres(db *sql.DB, logger logging.Logger) AccountRepo {
 	}
 }
 
+var getAllAccountsSQL = `
+	SELECT a.username, a.is_active, a.created_at, a.updated_at,
+	ARRAY(SELECT role_name FROM accounts_roles ar WHERE ar.account_id = a.id) AS roles 
+	FROM accounts a;
+`
+
 func (a *accountPostgres) GetAll(ctx context.Context) []types.Account {
 	panic("unimplemented")
 }
+
+var getAccountByIdSQL = `
+	SELECT a.username, a.password_hash, a.is_active, a.created_at, a.updated_at,
+	ARRAY(SELECT role_name FROM accounts_roles ar WHERE ar.account_id = a.id) AS roles 
+	FROM accounts a WHERE a.id = $1;
+`
 
 func (a *accountPostgres) GetById(ctx context.Context, id uuid.UUID) (*types.Account, error) {
 	panic("unimplemented")
 }
 
+var getAccountByUsernameSQL = `
+	SELECT a.username, a.password_hash, a.is_active, a.created_at, a.updated_at,
+	ARRAY(SELECT role_name FROM accounts_roles ar WHERE ar.account_id = a.id) AS roles 
+	FROM accounts a WHERE a.username = $1;
+`
+
 func (a *accountPostgres) GetByUsername(ctx context.Context, username string) (*types.Account, error) {
 	panic("unimplemented")
 }
+
+var insertAccountSQL = `
+	INSERT INTO accounts 
+		(username, password_hash, is_active, created_at, updated_at) 
+	VALUES ($1, $2, $3, $4, $5);
+`
 
 func (a *accountPostgres) Create(ctx context.Context, account types.Account) error {
 	panic("unimplemented")
 }
 
+var updateAccountSQL = `
+	UPDATE accounts SET username=$1, password_hash=$2, is_active=$3, updated_at=$4
+	WHERE id=$5
+`
+
 func (a *accountPostgres) Update(ctx context.Context, account types.Account) error {
 	panic("unimplemented")
 }
+
+var deleteAccountSQL = `
+	DELETE FROM accounts WHERE id=$1;
+`
 
 func (a *accountPostgres) Delete(ctx context.Context, id uuid.UUID) error {
 	panic("unimplemented")
