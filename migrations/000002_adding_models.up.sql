@@ -10,8 +10,8 @@ CREATE TABLE accounts (
     username VARCHAR(32) NOT NULL,
     password_hash VARCHAR NOT NULL,
     is_active BOOLEAN DEFAULT TRUE,
-    created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT now(),
+    updated_at TIMESTAMP NOT NULL DEFAULT now(),
     PRIMARY KEY (id)
 );
 
@@ -38,8 +38,8 @@ CREATE TABLE messages (
     content VARCHAR NOT NULL,
     account_id uuid NOT NULL,
     channel_id uuid NOT NULL,
-    created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT now(),
+    updated_at TIMESTAMP NOT NULL DEFAULT now(),
     FOREIGN KEY (channel_id) REFERENCES channels(id) ON DELETE CASCADE,
     FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE NO ACTION, 
     PRIMARY KEY (id)
