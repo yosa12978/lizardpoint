@@ -1,4 +1,4 @@
-package account
+package types
 
 import (
 	"time"
@@ -13,4 +13,5 @@ type Account struct {
 	IsActive     bool
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
+	Roles        []Role
 }
