@@ -22,13 +22,34 @@ func NewAccountPostgres(db *sql.DB, logger logging.Logger) AccountRepo {
 }
 
 var getAllAccountsSQL = `
-	SELECT a.username, a.is_active, a.created_at, a.updated_at,
+	SELECT a.username, a.password_hash, a.is_active, a.created_at, a.updated_at,
 	ARRAY(SELECT role_name FROM accounts_roles ar WHERE ar.account_id = a.id) AS roles 
 	FROM accounts a;
 `
 
-func (a *accountPostgres) GetAll(ctx context.Context) []types.Account {
-	panic("unimplemented")
+func (a *accountPostgres) GetAll(ctx context.Context) ([]types.Account, error) {
+	var accounts []types.Account
+	row, err := a.db.QueryContext(ctx, getAllAccountsSQL)
+	if err != nil {
+		return accounts, types.NewErrInternalFailure(err)
+	}
+	for row.Next() {
+		account := types.Account{}
+		var rolesStr []string
+		row.Scan(
+			&account.Username,
+			&account.PasswordHash,
+			&account.IsActive,
+			&account.CreatedAt,
+			&account.UpdatedAt,
+			&rolesStr,
+		)
+		for _, name := range rolesStr {
+			account.Roles = append(account.Roles, types.Role{Name: name})
+		}
+		accounts = append(accounts, account)
+	}
+	return accounts, nil
 }
 
 var getAccountByIdSQL = `

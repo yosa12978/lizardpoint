@@ -8,7 +8,7 @@ import (
 )
 
 type AccountRepo interface {
-	GetAll(ctx context.Context) []types.Account
+	GetAll(ctx context.Context) ([]types.Account, error)
 	GetById(ctx context.Context, id uuid.UUID) (*types.Account, error)
 	GetByUsername(ctx context.Context, username string) (*types.Account, error)
 
