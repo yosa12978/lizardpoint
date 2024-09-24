@@ -3,8 +3,11 @@ package repos
 import (
 	"context"
 	"database/sql"
+	"errors"
+	"time"
 
 	"github.com/google/uuid"
+	"github.com/lib/pq"
 	"github.com/yosa12978/lizardpoint/internal/logging"
 	"github.com/yosa12978/lizardpoint/internal/types"
 )
@@ -31,6 +34,9 @@ func (a *accountPostgres) GetAll(ctx context.Context) ([]types.Account, error) {
 	var accounts []types.Account
 	row, err := a.db.QueryContext(ctx, getAllAccountsSQL)
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return accounts, nil
+		}
 		return accounts, types.NewErrInternalFailure(err)
 	}
 	for row.Next() {
@@ -42,7 +48,7 @@ func (a *accountPostgres) GetAll(ctx context.Context) ([]types.Account, error) {
 			&account.IsActive,
 			&account.CreatedAt,
 			&account.UpdatedAt,
-			&rolesStr,
+			(*pq.StringArray)(&rolesStr),
 		)
 		for _, name := range rolesStr {
 			account.Roles = append(account.Roles, types.Role{Name: name})
@@ -59,7 +65,29 @@ var getAccountByIdSQL = `
 `
 
 func (a *accountPostgres) GetById(ctx context.Context, id uuid.UUID) (*types.Account, error) {
-	panic("unimplemented")
+	var account types.Account
+	var rolesStr []string
+	err := a.db.QueryRowContext(ctx, getAccountByIdSQL, id).
+		Scan(
+			&account.Username,
+			&account.PasswordHash,
+			&account.IsActive,
+			&account.CreatedAt,
+			&account.UpdatedAt,
+			(*pq.StringArray)(&rolesStr),
+		)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, types.NewErrNotFound(err)
+		}
+		return nil, types.NewErrInternalFailure(err)
+	}
+
+	for _, name := range rolesStr {
+		account.Roles = append(account.Roles, types.Role{Name: name})
+	}
+	return &account, err
 }
 
 var getAccountByUsernameSQL = `
@@ -69,7 +97,29 @@ var getAccountByUsernameSQL = `
 `
 
 func (a *accountPostgres) GetByUsername(ctx context.Context, username string) (*types.Account, error) {
-	panic("unimplemented")
+	var account types.Account
+	var rolesStr []string
+	err := a.db.QueryRowContext(ctx, getAccountByUsernameSQL, username).
+		Scan(
+			&account.Username,
+			&account.PasswordHash,
+			&account.IsActive,
+			&account.CreatedAt,
+			&account.UpdatedAt,
+			(*pq.StringArray)(&rolesStr),
+		)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, types.NewErrNotFound(err)
+		}
+		return nil, types.NewErrInternalFailure(err)
+	}
+
+	for _, name := range rolesStr {
+		account.Roles = append(account.Roles, types.Role{Name: name})
+	}
+	return &account, nil
 }
 
 var insertAccountSQL = `
@@ -79,7 +129,18 @@ var insertAccountSQL = `
 `
 
 func (a *accountPostgres) Create(ctx context.Context, account types.Account) error {
-	panic("unimplemented")
+	_, err := a.db.ExecContext(ctx,
+		insertAccountSQL,
+		account.Username,
+		account.PasswordHash,
+		account.IsActive,
+		account.CreatedAt,
+		account.UpdatedAt,
+	)
+	if err != nil {
+		return types.NewErrInternalFailure(err)
+	}
+	return nil
 }
 
 var updateAccountSQL = `
@@ -88,7 +149,21 @@ var updateAccountSQL = `
 `
 
 func (a *accountPostgres) Update(ctx context.Context, account types.Account) error {
-	panic("unimplemented")
+	_, err := a.db.ExecContext(ctx,
+		updateAccountSQL,
+		account.Username,
+		account.PasswordHash,
+		account.IsActive,
+		time.Now().UTC(), //account.UpdatedAt,
+		account.Id,
+	)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return types.NewErrNotFound(err)
+		}
+		return types.NewErrInternalFailure(err)
+	}
+	return nil
 }
 
 var deleteAccountSQL = `
@@ -96,5 +171,12 @@ var deleteAccountSQL = `
 `
 
 func (a *accountPostgres) Delete(ctx context.Context, id uuid.UUID) error {
-	panic("unimplemented")
+	_, err := a.db.ExecContext(ctx, deleteAccountSQL, id)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return types.NewErrNotFound(err)
+		}
+		return types.NewErrInternalFailure(err)
+	}
+	return nil
 }
