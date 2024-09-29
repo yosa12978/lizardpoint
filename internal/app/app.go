@@ -23,7 +23,7 @@ func Run() error {
 	defer cancel()
 
 	conf := config.Get()
-	logger := logging.NewJsonLogger(os.Stdout)
+	logger := logging.NewJsonLogger(os.Stdout, conf.App.LogLevel)
 
 	data.Postgres(ctx, logger)
 

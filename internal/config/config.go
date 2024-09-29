@@ -14,9 +14,12 @@ var (
 )
 
 type Config struct {
+	App struct {
+		LogLevel string `yaml:"log_level" envconfig:"LP_LOG_LEVEL"`
+	} `yaml:"app"`
 	Server struct {
 		Addr         string `yaml:"addr" envconfig:"LP_ADDR"`
-		RootPassword string `yaml:"root_pass" envconfig:"LP_ROOT_PASS"`
+		RootPassword string `yaml:"root_password" envconfig:"LP_ROOT_PASSWORD"`
 	} `yaml:"server"`
 	Postgres struct {
 		User           string `yaml:"user" envconfig:"LP_POSTGRES_USER"`

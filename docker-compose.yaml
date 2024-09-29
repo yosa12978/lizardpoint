@@ -10,6 +10,7 @@ services:
     volumes:
       - ./:/app
     environment:
+      - LP_LOG_LEVEL=DEBUG
       - LP_POSTGRES_USER=user
       - LP_POSTGRES_PASSWORD=user
       - LP_POSTGRES_DB=lizardpoint_db

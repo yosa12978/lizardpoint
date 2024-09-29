@@ -22,7 +22,7 @@ func newOptions(opts ...optionFunc) options {
 
 func newDefaultOptions() options {
 	return options{
-		logger: logging.NewJsonLogger(os.Stdout),
+		logger: logging.NewJsonLogger(os.Stdout, "INFO"),
 	}
 }
 

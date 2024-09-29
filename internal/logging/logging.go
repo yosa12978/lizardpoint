@@ -16,15 +16,37 @@ type slogLogger struct {
 	logger *slog.Logger
 }
 
-func NewJsonLogger(w io.Writer) Logger {
+func getLevel(s string) slog.Leveler {
+	switch s {
+	case "DEBUG":
+		return slog.LevelDebug
+	case "INFO":
+		return slog.LevelInfo
+	case "WARN":
+		return slog.LevelWarn
+	case "ERROR":
+		return slog.LevelError
+	}
+	return slog.LevelInfo
+}
+
+func NewJsonLogger(w io.Writer, level string) Logger {
 	return &slogLogger{
-		logger: slog.New(slog.NewJSONHandler(w, nil)),
+		logger: slog.New(
+			slog.NewJSONHandler(w, &slog.HandlerOptions{
+				Level: getLevel(level),
+			}),
+		),
 	}
 }
 
-func NewTextLogger(w io.Writer) Logger {
+func NewTextLogger(w io.Writer, level string) Logger {
 	return &slogLogger{
-		logger: slog.New(slog.NewTextHandler(w, nil)),
+		logger: slog.New(
+			slog.NewTextHandler(w, &slog.HandlerOptions{
+				Level: getLevel(level),
+			}),
+		),
 	}
 }
 
