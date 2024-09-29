@@ -9,7 +9,7 @@ CREATE TABLE accounts (
     id uuid DEFAULT gen_random_uuid(),
     username VARCHAR(32) NOT NULL,
     password_hash VARCHAR NOT NULL,
-    is_active BOOLEAN DEFAULT TRUE,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP NOT NULL DEFAULT now(),
     updated_at TIMESTAMP NOT NULL DEFAULT now(),
     PRIMARY KEY (id)
@@ -39,7 +39,10 @@ CREATE TABLE messages (
     account_id uuid NOT NULL,
     channel_id uuid NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT now(),
+    edited BOOLEAN NOT NULL DEFAULT FALSE,
     updated_at TIMESTAMP NOT NULL DEFAULT now(),
+    parent_id uuid NULL DEFAULT NULL,
+    FOREIGN KEY (parent_id) REFERENCES messages(id) ON DELETE CASCADE,
     FOREIGN KEY (channel_id) REFERENCES channels(id) ON DELETE CASCADE,
     FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE NO ACTION, 
     PRIMARY KEY (id)
