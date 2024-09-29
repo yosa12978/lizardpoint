@@ -31,6 +31,7 @@ var getAllAccountsSQL = `
 `
 
 func (a *accountPostgres) GetAll(ctx context.Context) ([]types.Account, error) {
+	a.logger.Debug("fetching all accounts")
 	var accounts []types.Account
 	row, err := a.db.QueryContext(ctx, getAllAccountsSQL)
 	if err != nil {
@@ -65,6 +66,7 @@ var getAccountByIdSQL = `
 `
 
 func (a *accountPostgres) GetById(ctx context.Context, id uuid.UUID) (*types.Account, error) {
+	a.logger.Debug("fetching account by id", "id", id.String())
 	var account types.Account
 	var rolesStr []string
 	err := a.db.QueryRowContext(ctx, getAccountByIdSQL, id).
@@ -97,6 +99,7 @@ var getAccountByUsernameSQL = `
 `
 
 func (a *accountPostgres) GetByUsername(ctx context.Context, username string) (*types.Account, error) {
+	a.logger.Debug("fetching account by username", "username", username)
 	var account types.Account
 	var rolesStr []string
 	err := a.db.QueryRowContext(ctx, getAccountByUsernameSQL, username).
@@ -129,6 +132,7 @@ var insertAccountSQL = `
 `
 
 func (a *accountPostgres) Create(ctx context.Context, account types.Account) error {
+	a.logger.Debug("creating new account", "username", account.Username)
 	_, err := a.db.ExecContext(ctx,
 		insertAccountSQL,
 		account.Username,
@@ -149,6 +153,7 @@ var updateAccountSQL = `
 `
 
 func (a *accountPostgres) Update(ctx context.Context, account types.Account) error {
+	a.logger.Debug("updating account", "username", account.Id.String())
 	_, err := a.db.ExecContext(ctx,
 		updateAccountSQL,
 		account.Username,
@@ -171,6 +176,7 @@ var deleteAccountSQL = `
 `
 
 func (a *accountPostgres) Delete(ctx context.Context, id uuid.UUID) error {
+	a.logger.Debug("removing account", "id", id.String())
 	_, err := a.db.ExecContext(ctx, deleteAccountSQL, id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
