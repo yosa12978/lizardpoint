@@ -158,6 +158,50 @@ func (m *messagePostgres) GetReplies(
 	return messages[1:], nil // also exclude parent message
 }
 
+var getMessageByIdSQL = `
+	SELECT m.id, m.content, m.edited,
+	m.created_at, m.updated_at, m.parent_id,
+	p.account_id AS parent_account_id, 
+	p.username AS parent_account_username,
+	a.id AS account_id,
+	a.username AS account_username,
+	c.id AS channel_id,
+	c.name AS channel_name FROM messages m
+	INNER JOIN channels c ON m.channel_id=c.id
+	INNER JOIN accounts a ON m.account_id=a.id
+	LEFT JOIN (
+		SELECT pm.id, pm.account_id, pa.username 
+		FROM messages pm INNER JOIN accounts pa ON pa.id=pm.account_id
+	) p ON m.parent_id=p.id
+	WHERE m.id=$1;
+`
+
+func (m *messagePostgres) GetById(ctx context.Context, id uuid.UUID) (*types.Message, error) {
+	message := types.Message{}
+	err := m.db.QueryRowContext(ctx, getMessageByIdSQL, id).
+		Scan(
+			&message.Id,
+			&message.Content,
+			&message.Edited,
+			&message.CreatedAt,
+			&message.UpdatedAt,
+			&message.ParentId,
+			&message.ParentAccountId,
+			&message.ParentAccountUsername,
+			&message.AccountId,
+			&message.AccountUsername,
+			&message.ChannelId,
+			&message.ChannelName,
+		)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, types.ErrNotFound
+		}
+		return nil, types.NewErrInternalFailure(err)
+	}
+	return &message, nil
+}
+
 var insertMessageSQL = `
 	INSERT INTO messages (
 		id, content, edited, 
