@@ -234,7 +234,7 @@ var updateMessageSQL = `
 
 func (m *messagePostgres) Update(ctx context.Context, message types.Message) error {
 	_, err := m.db.ExecContext(ctx,
-		insertMessageSQL,
+		updateMessageSQL,
 		message.Content,
 		message.UpdatedAt,
 		message.Id,
