@@ -15,4 +15,7 @@ type AccountRepo interface {
 	Create(ctx context.Context, account types.Account) error
 	Update(ctx context.Context, account types.Account) error
 	Delete(ctx context.Context, id uuid.UUID) error
+
+	AddRole(ctx context.Context, accountId uuid.UUID, role string) error
+	RemoveRole(ctx context.Context, accountId uuid.UUID, role string) error
 }

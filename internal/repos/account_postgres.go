@@ -186,3 +186,30 @@ func (a *accountPostgres) Delete(ctx context.Context, id uuid.UUID) error {
 	}
 	return nil
 }
+
+var addRoleToAccountSQL = `
+	INSERT INTO accounts_roles (account_id, role_name) VALUES ($1, $2);
+`
+
+func (a *accountPostgres) AddRole(ctx context.Context, accountId uuid.UUID, role string) error {
+	_, err := a.db.ExecContext(ctx, addRoleToAccountSQL, accountId, role)
+	if err != nil {
+		return types.NewErrInternalFailure(err)
+	}
+	return nil
+}
+
+var removeRoleFromAccountSQL = `
+	DELETE FROM accounts_roles WHERE account_id=$1 AND role_name=$2;
+`
+
+func (a *accountPostgres) RemoveRole(ctx context.Context, accountId uuid.UUID, role string) error {
+	_, err := a.db.ExecContext(ctx, removeRoleFromAccountSQL, accountId, role)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return types.NewErrNotFound(err)
+		}
+		return types.NewErrInternalFailure(err)
+	}
+	return nil
+}

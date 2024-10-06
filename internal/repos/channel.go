@@ -14,4 +14,9 @@ type ChannelRepo interface {
 	Create(ctx context.Context, channel types.Channel) error
 	Update(ctx context.Context, channel types.Channel) error
 	Delete(ctx context.Context, id uuid.UUID) error
+
+	AddWritePermission(ctx context.Context, channelId uuid.UUID, role string) error
+	AddReadPermission(ctx context.Context, channelId uuid.UUID, role string) error
+	RemoveWritePermission(ctx context.Context, channelId uuid.UUID, role string) error
+	RemoveReadPermission(ctx context.Context, channelId uuid.UUID, role string) error
 }

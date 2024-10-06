@@ -134,3 +134,57 @@ func (c *channelPostgres) Delete(ctx context.Context, id uuid.UUID) error {
 	}
 	return nil
 }
+
+var addWritePermSQL = `
+	INSERT INTO write_permissions (channel_id, role_name) VALUES ($1, $2);
+`
+
+func (c *channelPostgres) AddWritePermission(ctx context.Context, channelId uuid.UUID, role string) error {
+	_, err := c.db.ExecContext(ctx, addWritePermSQL, channelId, role)
+	if err != nil {
+		return types.NewErrInternalFailure(err)
+	}
+	return nil
+}
+
+var addReadPermSQL = `
+	INSERT INTO read_permissions (channel_id, role_name) VALUES ($1, $2);
+`
+
+func (c *channelPostgres) AddReadPermission(ctx context.Context, channelId uuid.UUID, role string) error {
+	_, err := c.db.ExecContext(ctx, addReadPermSQL, channelId, role)
+	if err != nil {
+		return types.NewErrInternalFailure(err)
+	}
+	return nil
+}
+
+var removeWritePermSQL = `
+	DELETE FROM write_permissions WHERE channel_id=$1 AND role_name=$2;
+`
+
+func (c *channelPostgres) RemoveWritePermission(ctx context.Context, channelId uuid.UUID, role string) error {
+	_, err := c.db.ExecContext(ctx, removeWritePermSQL, channelId, role)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return types.NewErrNotFound(err)
+		}
+		return types.NewErrInternalFailure(err)
+	}
+	return nil
+}
+
+var removeReadPermSQL = `
+	DELETE FROM read_permissions WHERE channel_id=$1 AND role_name=$2;
+`
+
+func (c *channelPostgres) RemoveReadPermission(ctx context.Context, channelId uuid.UUID, role string) error {
+	_, err := c.db.ExecContext(ctx, removeReadPermSQL, channelId, role)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return types.NewErrNotFound(err)
+		}
+		return types.NewErrInternalFailure(err)
+	}
+	return nil
+}
