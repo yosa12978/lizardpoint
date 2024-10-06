@@ -21,9 +21,8 @@ var (
 	pgDb   *sql.DB
 )
 
-// return error instead of calling panic
-func connectPostgres(ctx context.Context, logger logging.Logger) func() {
-	return func() {
+func connectPostgres(ctx context.Context, logger logging.Logger) func() error {
+	return func() error {
 		conf := config.Get()
 		url := fmt.Sprintf(
 			"postgres://%s:%s@%s/%s?sslmode=%s",
@@ -36,18 +35,18 @@ func connectPostgres(ctx context.Context, logger logging.Logger) func() {
 		conn, err := sql.Open("postgres", url)
 		if err != nil {
 			logger.Error("error opening postgres connection", "error", err.Error())
-			return
+			return err
 		}
 		if err := conn.PingContext(ctx); err != nil {
 			logger.Error("error verifying postgres connection", "error", err.Error())
-			return
+			return err
 		}
 		pgDb = conn
 
 		migrator, err := migrate.New(conf.Postgres.MigrationsPath, url)
 		if err != nil {
 			logger.Error("error creating a new migrator", "error", err.Error())
-			return
+			return err
 		}
 		defer migrator.Close()
 
@@ -60,18 +59,23 @@ func connectPostgres(ctx context.Context, logger logging.Logger) func() {
 				migrator.Force(errDirty.Version - 1)
 				if err := migrator.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
 					logger.Error("migration error", "error", err.Error())
-					return
+					return err
 				}
 			} else {
 				logger.Error("migration error", "error", err.Error())
-				return
+				return err
 			}
 		}
 		logger.Info("database migrations completed successfully")
+		return nil
 	}
 }
 
 func Postgres(ctx context.Context, logger logging.Logger) *sql.DB {
-	pgInit.Do(connectPostgres(ctx, logger))
+	pgInit.Do(func() {
+		if err := connectPostgres(ctx, logger); err != nil {
+			panic(err)
+		}
+	})
 	return pgDb
 }
