@@ -36,3 +36,17 @@ func (c CreateAccountDto) Validate(ctx context.Context) (CreateAccountDto, map[s
 	}
 	return c, problems, len(problems) == 0
 }
+
+type UpdatePasswordDto struct {
+	OldPassword string
+	NewPassword string
+}
+
+func (u UpdatePasswordDto) Validate(ctx context.Context) (UpdatePasswordDto, map[string]string, bool) {
+	problems := make(map[string]string)
+	u.NewPassword = strings.TrimSpace(u.NewPassword)
+	if len(u.NewPassword) < 8 {
+		problems["new_password"] = "password length must be >= 8"
+	}
+	return u, problems, len(problems) == 0
+}
