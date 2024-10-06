@@ -73,7 +73,7 @@ func connectPostgres(ctx context.Context, logger logging.Logger) func() error {
 
 func Postgres(ctx context.Context, logger logging.Logger) *sql.DB {
 	pgInit.Do(func() {
-		if err := connectPostgres(ctx, logger); err != nil {
+		if err := connectPostgres(ctx, logger)(); err != nil {
 			panic(err)
 		}
 	})
