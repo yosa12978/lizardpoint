@@ -31,7 +31,7 @@ func Run() error {
 
 	doneCh := make(chan struct{})
 	go func() {
-		logger.Info("server listening", "addr", conf.Server.Addr)
+		logger.Info("server is running", "addr", conf.Server.Addr)
 		if err := server.ListenAndServe(); err != nil &&
 			!errors.Is(err, http.ErrServerClosed) {
 			logger.Error(err.Error())
