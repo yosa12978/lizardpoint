@@ -7,7 +7,7 @@ import (
 	"github.com/yosa12978/lizardpoint/internal/logging"
 )
 
-func Recovery(logger logging.Logger) func(http.Handler) http.Handler {
+func Recovery(logger logging.Logger) Middleware {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			defer func() {

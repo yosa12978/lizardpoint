@@ -17,7 +17,7 @@ func (w *wrappedWriter) WriteHeader(statusCode int) {
 	w.statusCode = statusCode
 }
 
-func Logger(logger logging.Logger) func(http.Handler) http.Handler {
+func Logger(logger logging.Logger) Middleware {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			writer := &wrappedWriter{ResponseWriter: w, statusCode: 200}

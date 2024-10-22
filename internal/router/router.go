@@ -14,7 +14,7 @@ func NewRouter(opts ...optionFunc) http.Handler {
 	handler := middleware.Composition(
 		router,
 		middleware.Logger(options.logger),
-		middleware.StripSlash,
+		middleware.StripSlash(),
 		middleware.Recovery(options.logger),
 	)
 	return handler

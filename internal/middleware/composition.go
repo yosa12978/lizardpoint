@@ -2,10 +2,7 @@ package middleware
 
 import "net/http"
 
-func Composition(
-	f http.Handler,
-	middlewares ...func(http.Handler) http.Handler,
-) http.Handler {
+func Composition(f http.Handler, middlewares ...Middleware) http.Handler {
 	for _, middleware := range middlewares {
 		f = middleware(f)
 	}
