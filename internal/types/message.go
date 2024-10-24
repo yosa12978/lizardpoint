@@ -29,8 +29,7 @@ type CreateMessageDto struct {
 }
 
 func (c CreateMessageDto) Validate(ctx context.Context) (
-	CreateMessageDto, map[string]string, bool,
-) {
+	CreateMessageDto, map[string]string, bool) {
 	problems := make(map[string]string)
 	c.Content = strings.TrimSpace(c.Content)
 	if c.Content == "" {
