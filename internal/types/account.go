@@ -38,8 +38,8 @@ func (c CreateAccountDto) Validate(ctx context.Context) (CreateAccountDto, map[s
 }
 
 type UpdatePasswordDto struct {
-	OldPassword string
-	NewPassword string
+	OldPassword string `json:"old_password"`
+	NewPassword string `json:"new_password"`
 }
 
 func (u UpdatePasswordDto) Validate(ctx context.Context) (UpdatePasswordDto, map[string]string, bool) {
