@@ -7,7 +7,7 @@ import (
 	"github.com/yosa12978/lizardpoint/internal/types"
 )
 
-type Message interface {
+type MessageRepo interface {
 	GetByChannelId(ctx context.Context, channelId uuid.UUID, page int, limit int) ([]types.Message, error)
 	GetReplies(ctx context.Context, parentId uuid.UUID, page int, limit int) ([]types.Message, error)
 	GetById(ctx context.Context, id uuid.UUID) (*types.Message, error)

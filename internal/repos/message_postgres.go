@@ -16,7 +16,7 @@ type messagePostgres struct {
 	logger logging.Logger
 }
 
-func NewMessagePostgres(db *sql.DB, logger logging.Logger) Message {
+func NewMessagePostgres(db *sql.DB, logger logging.Logger) MessageRepo {
 	return &messagePostgres{db: db, logger: logger}
 }
 

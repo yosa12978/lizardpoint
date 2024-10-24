@@ -4,6 +4,8 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+	"github.com/yosa12978/lizardpoint/internal/logging"
+	"github.com/yosa12978/lizardpoint/internal/repos"
 	"github.com/yosa12978/lizardpoint/internal/types"
 )
 
@@ -14,4 +16,44 @@ type AccountService interface {
 	CreateAccount(ctx context.Context, dto types.CreateAccountDto) error
 	ChangePassword(ctx context.Context, accountId uuid.UUID, dto types.UpdatePasswordDto) error
 	DeleteAccount(ctx context.Context, accountId uuid.UUID) error
+}
+
+type accountService struct {
+	accountRepo repos.AccountRepo
+	logger      logging.Logger
+}
+
+func NewAccountService(
+	accountRepo repos.AccountRepo,
+	logger logging.Logger,
+) AccountService {
+	return &accountService{
+		accountRepo: accountRepo,
+		logger:      logger,
+	}
+}
+
+// ChangePassword implements AccountService.
+func (a *accountService) ChangePassword(ctx context.Context, accountId uuid.UUID, dto types.UpdatePasswordDto) error {
+	panic("unimplemented")
+}
+
+// CreateAccount implements AccountService.
+func (a *accountService) CreateAccount(ctx context.Context, dto types.CreateAccountDto) error {
+	panic("unimplemented")
+}
+
+// DeleteAccount implements AccountService.
+func (a *accountService) DeleteAccount(ctx context.Context, accountId uuid.UUID) error {
+	panic("unimplemented")
+}
+
+// GetAccountById implements AccountService.
+func (a *accountService) GetAccountById(ctx context.Context) (*types.Account, error) {
+	panic("unimplemented")
+}
+
+// GetAccounts implements AccountService.
+func (a *accountService) GetAccounts(ctx context.Context, page int, limit int) ([]types.Account, error) {
+	panic("unimplemented")
 }
