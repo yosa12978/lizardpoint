@@ -13,8 +13,8 @@ type AccountService interface {
 	GetAccounts(ctx context.Context, page, limit int) ([]types.Account, error)
 	GetAccountById(ctx context.Context) (*types.Account, error)
 
-	CreateAccount(ctx context.Context, dto types.CreateAccountDto) error
-	ChangePassword(ctx context.Context, accountId uuid.UUID, dto types.UpdatePasswordDto) error
+	CreateAccount(ctx context.Context, username, password string) error
+	ChangePassword(ctx context.Context, accountId uuid.UUID, oldPassword, newPassword string) error
 	DeleteAccount(ctx context.Context, accountId uuid.UUID) error
 }
 
@@ -34,12 +34,12 @@ func NewAccountService(
 }
 
 // ChangePassword implements AccountService.
-func (a *accountService) ChangePassword(ctx context.Context, accountId uuid.UUID, dto types.UpdatePasswordDto) error {
+func (a *accountService) ChangePassword(ctx context.Context, accountId uuid.UUID, oldPassword string, newPassword string) error {
 	panic("unimplemented")
 }
 
 // CreateAccount implements AccountService.
-func (a *accountService) CreateAccount(ctx context.Context, dto types.CreateAccountDto) error {
+func (a *accountService) CreateAccount(ctx context.Context, username string, password string) error {
 	panic("unimplemented")
 }
 

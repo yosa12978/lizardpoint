@@ -18,8 +18,8 @@ type ChannelService interface {
 	RemoveWritePermission(ctx context.Context, channelId uuid.UUID, role string) error
 	RemoveReadPermission(ctx context.Context, channelId uuid.UUID, role string) error
 
-	CreateChannel(ctx context.Context, dto types.CreateChannelDto) error
-	UpdateChannel(ctx context.Context, channelId uuid.UUID, dto types.UpdateChannelDto) error
+	CreateChannel(ctx context.Context, name string) error
+	UpdateChannel(ctx context.Context, channelId uuid.UUID, name string) error
 	DeleteChannel(ctx context.Context, channelId uuid.UUID) error
 }
 
@@ -49,7 +49,7 @@ func (c *channelService) AddWritePermission(ctx context.Context, channelId uuid.
 }
 
 // CreateChannel implements ChannelService.
-func (c *channelService) CreateChannel(ctx context.Context, dto types.CreateChannelDto) error {
+func (c *channelService) CreateChannel(ctx context.Context, name string) error {
 	panic("unimplemented")
 }
 
@@ -79,6 +79,6 @@ func (c *channelService) RemoveWritePermission(ctx context.Context, channelId uu
 }
 
 // UpdateChannel implements ChannelService.
-func (c *channelService) UpdateChannel(ctx context.Context, channelId uuid.UUID, dto types.UpdateChannelDto) error {
+func (c *channelService) UpdateChannel(ctx context.Context, channelId uuid.UUID, name string) error {
 	panic("unimplemented")
 }

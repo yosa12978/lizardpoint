@@ -19,13 +19,29 @@ type MessageService interface {
 	GetMessageById(ctx context.Context, messageId uuid.UUID) (*types.Message, error)
 	GetMessageReplies(ctx context.Context, messageId uuid.UUID) ([]types.Message, error)
 
-	CreateMessage(ctx context.Context, dto types.CreateMessageDto) error
+	CreateMessage(
+		ctx context.Context,
+		accountId, channelId uuid.UUID,
+		message string,
+	) error
+	CreateReply(
+		ctx context.Context,
+		accountId,
+		channelId,
+		parentId uuid.UUID,
+		content string,
+	) error
 	UpdateMessage(
 		ctx context.Context,
+		accountId,
 		messageId uuid.UUID,
-		dto types.UpdateMessageDto,
+		content string,
 	) error
-	DeleteMessage(ctx context.Context, messageId uuid.UUID) error
+	DeleteMessage(
+		ctx context.Context,
+		accountId,
+		messageId uuid.UUID,
+	) error
 }
 
 type messageService struct {
@@ -44,12 +60,17 @@ func NewMessageService(
 }
 
 // CreateMessage implements MessageService.
-func (m *messageService) CreateMessage(ctx context.Context, dto types.CreateMessageDto) error {
+func (m *messageService) CreateMessage(ctx context.Context, accountId uuid.UUID, channelId uuid.UUID, message string) error {
+	panic("unimplemented")
+}
+
+// CreateReply implements MessageService.
+func (m *messageService) CreateReply(ctx context.Context, accountId uuid.UUID, channelId uuid.UUID, parentId uuid.UUID, content string) error {
 	panic("unimplemented")
 }
 
 // DeleteMessage implements MessageService.
-func (m *messageService) DeleteMessage(ctx context.Context, messageId uuid.UUID) error {
+func (m *messageService) DeleteMessage(ctx context.Context, accountId uuid.UUID, messageId uuid.UUID) error {
 	panic("unimplemented")
 }
 
@@ -69,6 +90,6 @@ func (m *messageService) GetMessages(ctx context.Context, channelId uuid.UUID, p
 }
 
 // UpdateMessage implements MessageService.
-func (m *messageService) UpdateMessage(ctx context.Context, messageId uuid.UUID, dto types.UpdateMessageDto) error {
+func (m *messageService) UpdateMessage(ctx context.Context, accountId uuid.UUID, messageId uuid.UUID, content string) error {
 	panic("unimplemented")
 }

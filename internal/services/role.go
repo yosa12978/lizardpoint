@@ -12,8 +12,8 @@ type RoleService interface {
 	GetRoles(ctx context.Context) ([]types.Role, error)
 	GetRoleByName(ctx context.Context, name string) (*types.Role, error)
 
-	CreateRole(ctx context.Context, dto types.CreateRoleDto) error
-	UpdateRole(ctx context.Context, role string, dto types.UpdateRoleDto) error
+	CreateRole(ctx context.Context, name string) error
+	UpdateRole(ctx context.Context, oldName string, newName string) error
 	DeleteRole(ctx context.Context, role string) error
 }
 
@@ -33,7 +33,7 @@ func NewRoleService(
 }
 
 // CreateRole implements RoleService.
-func (r *roleService) CreateRole(ctx context.Context, dto types.CreateRoleDto) error {
+func (r *roleService) CreateRole(ctx context.Context, name string) error {
 	panic("unimplemented")
 }
 
@@ -53,6 +53,6 @@ func (r *roleService) GetRoles(ctx context.Context) ([]types.Role, error) {
 }
 
 // UpdateRole implements RoleService.
-func (r *roleService) UpdateRole(ctx context.Context, role string, dto types.UpdateRoleDto) error {
+func (r *roleService) UpdateRole(ctx context.Context, oldName string, newName string) error {
 	panic("unimplemented")
 }
