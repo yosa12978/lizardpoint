@@ -127,8 +127,8 @@ func (a *accountPostgres) GetByUsername(ctx context.Context, username string) (*
 
 var insertAccountSQL = `
 	INSERT INTO accounts 
-		(username, password_hash, is_active, created_at, updated_at) 
-	VALUES ($1, $2, $3, $4, $5);
+		(username, password_hash, is_active, created_at, updated_at, salt) 
+	VALUES ($1, $2, $3, $4, $5, $6);
 `
 
 func (a *accountPostgres) Create(ctx context.Context, account types.Account) error {
@@ -140,6 +140,7 @@ func (a *accountPostgres) Create(ctx context.Context, account types.Account) err
 		account.IsActive,
 		account.CreatedAt,
 		account.UpdatedAt,
+		account.Salt,
 	)
 	if err != nil {
 		return types.NewErrInternalFailure(err)
@@ -148,8 +149,8 @@ func (a *accountPostgres) Create(ctx context.Context, account types.Account) err
 }
 
 var updateAccountSQL = `
-	UPDATE accounts SET username=$1, password_hash=$2, is_active=$3, updated_at=$4
-	WHERE id=$5
+	UPDATE accounts SET username=$1, password_hash=$2, is_active=$3, updated_at=$4, salt=$5
+	WHERE id=$6
 `
 
 func (a *accountPostgres) Update(ctx context.Context, account types.Account) error {
@@ -160,6 +161,7 @@ func (a *accountPostgres) Update(ctx context.Context, account types.Account) err
 		account.PasswordHash,
 		account.IsActive,
 		time.Now().UTC(), //account.UpdatedAt,
+		account.Salt,
 		account.Id,
 	)
 	if err != nil {

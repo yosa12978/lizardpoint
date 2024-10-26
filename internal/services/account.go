@@ -7,6 +7,7 @@ import (
 	"github.com/yosa12978/lizardpoint/internal/logging"
 	"github.com/yosa12978/lizardpoint/internal/repos"
 	"github.com/yosa12978/lizardpoint/internal/types"
+	"github.com/yosa12978/lizardpoint/pkg/utils"
 )
 
 type AccountService interface {
@@ -35,7 +36,17 @@ func NewAccountService(
 
 // ChangePassword implements AccountService.
 func (a *accountService) ChangePassword(ctx context.Context, accountId uuid.UUID, oldPassword string, newPassword string) error {
-	panic("unimplemented")
+	salt := uuid.NewString()
+	passwordHash, err := utils.HashPassword(newPassword + salt)
+	if err != nil {
+		return types.NewErrInternalFailure(err)
+	}
+	account := types.Account{
+		Id:           accountId,
+		PasswordHash: passwordHash,
+		Salt:         salt,
+	}
+	return a.accountRepo.Update(ctx, account)
 }
 
 // CreateAccount implements AccountService.

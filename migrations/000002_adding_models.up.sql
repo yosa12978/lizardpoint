@@ -9,6 +9,7 @@ CREATE TABLE accounts (
     id uuid DEFAULT gen_random_uuid(),
     username VARCHAR(32) NOT NULL,
     password_hash VARCHAR NOT NULL,
+    salt VARCHAR NOT NULL,
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP NOT NULL DEFAULT now(),
     updated_at TIMESTAMP NOT NULL DEFAULT now(),
