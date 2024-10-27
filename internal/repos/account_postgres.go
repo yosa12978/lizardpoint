@@ -215,3 +215,31 @@ func (a *accountPostgres) RemoveRole(ctx context.Context, accountId uuid.UUID, r
 	}
 	return nil
 }
+
+// replace sql execs to existing functions in repository
+func (a *accountPostgres) CreateWithDefaultRole(
+	ctx context.Context,
+	account types.Account,
+	role types.Role,
+) error {
+	return runInTx(ctx, a.db, func(tx *sql.Tx) error {
+		_, err := tx.ExecContext(ctx,
+			insertAccountSQL,
+			account.Username,
+			account.PasswordHash,
+			account.IsActive,
+			account.CreatedAt,
+			account.UpdatedAt,
+			account.Salt,
+		)
+		if err != nil {
+			return types.NewErrInternalFailure(err)
+		}
+		_, err = tx.ExecContext(ctx,
+			"INSERT INTO accounts_roles (account_id, role_name) VALUES ($1, $2);",
+			account.Id,
+			role.Name,
+		)
+		return err // specify error
+	})
+}

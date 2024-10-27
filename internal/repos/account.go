@@ -12,6 +12,8 @@ type AccountRepo interface {
 	GetById(ctx context.Context, id uuid.UUID) (*types.Account, error)
 	GetByUsername(ctx context.Context, username string) (*types.Account, error)
 
+	CreateWithDefaultRole(ctx context.Context, account types.Account, role types.Role) error
+
 	Create(ctx context.Context, account types.Account) error
 	Update(ctx context.Context, account types.Account) error
 	Delete(ctx context.Context, id uuid.UUID) error
