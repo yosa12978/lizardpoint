@@ -42,11 +42,21 @@ func NewAccountService(
 }
 
 func (a *accountService) SetActive(ctx context.Context, accountId uuid.UUID) error {
-	return nil
+	account, err := a.accountRepo.GetById(ctx, accountId)
+	if err != nil {
+		return err
+	}
+	account.IsActive = true
+	return a.accountRepo.Update(ctx, *account)
 }
 
 func (a *accountService) SetInactive(ctx context.Context, accountId uuid.UUID) error {
-	return nil
+	account, err := a.accountRepo.GetById(ctx, accountId)
+	if err != nil {
+		return err
+	}
+	account.IsActive = false
+	return a.accountRepo.Update(ctx, *account)
 }
 
 // ChangePassword implements AccountService.
