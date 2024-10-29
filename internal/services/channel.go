@@ -50,12 +50,18 @@ func (c *channelService) AddWritePermission(ctx context.Context, channelId uuid.
 
 // CreateChannel implements ChannelService.
 func (c *channelService) CreateChannel(ctx context.Context, name string) error {
-	panic("unimplemented")
+	channel := types.Channel{
+		Id:               uuid.New(),
+		Name:             name,
+		ReadPermissions:  []types.Role{},
+		WritePermissions: []types.Role{},
+	}
+	return c.channelRepo.Create(ctx, channel)
 }
 
 // DeleteChannel implements ChannelService.
 func (c *channelService) DeleteChannel(ctx context.Context, channelId uuid.UUID) error {
-	panic("unimplemented")
+	return c.channelRepo.Delete(ctx, channelId)
 }
 
 // GetChannelById implements ChannelService.
@@ -80,5 +86,10 @@ func (c *channelService) RemoveWritePermission(ctx context.Context, channelId uu
 
 // UpdateChannel implements ChannelService.
 func (c *channelService) UpdateChannel(ctx context.Context, channelId uuid.UUID, name string) error {
-	panic("unimplemented")
+	channel, err := c.channelRepo.GetById(ctx, channelId)
+	if err != nil {
+		return err
+	}
+	channel.Name = name
+	return c.channelRepo.Update(ctx, *channel)
 }
